@@ -1,4 +1,4 @@
-package com.example.flutter_namer
+package com.example.HealthApp
 
 import io.flutter.embedding.android.FlutterActivity
 

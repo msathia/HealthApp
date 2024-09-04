@@ -1,11 +1,10 @@
-# Sathia's Flutter Random Namer Hello world App
+# Sathia's Flutter Health App
 
 A new Flutter project.
 
 ## Getting Started
 
-This project was used to learn Flutter as a starting point for a Flutter application.
-
+This project is next step in creating a health app.
 A few resources to get you started if this is your first Flutter project:
 
 - [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)

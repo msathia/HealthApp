@@ -1,6 +1,6 @@
 {
-    "name": "flutter_namer",
-    "short_name": "flutter_namer",
+    "name": "HealthApp",
+    "short_name": "HealthApp",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
