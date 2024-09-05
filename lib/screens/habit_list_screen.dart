@@ -100,8 +100,11 @@ class _HabitListScreenState extends State<HabitListScreen> {
             });
           }
         },
-        child: Icon(Icons.add),
+        child: Center(
+          child: Icon(Icons.add),
+        ),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }
