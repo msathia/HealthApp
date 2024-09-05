@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/habit.dart';
+import 'package:intl/intl.dart'; // Added for DateTime formatting
 
 class HabitListScreen extends StatefulWidget {
   @override
@@ -38,54 +39,89 @@ class _HabitListScreenState extends State<HabitListScreen> {
       appBar: AppBar(
         title: Text('Habit Tracker'),
       ),
-      body: ListView.builder(
-        itemCount: habits.length,
-        itemBuilder: (context, index) {
-          final habit = habits[index];
-          return ListTile(
-            title: Text(habit.name),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(3.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
               children: List.generate(
                 5,
-                (i) => GestureDetector(
-                  onTap: () => _toggleHabitCompletion(habit.id, i),
-                  child: Container(
+                (index) {
+                  final date =
+                      DateTime.now().subtract(Duration(days: 4 - index));
+                  return Container(
                     width: 20,
                     height: 20,
                     margin: EdgeInsets.symmetric(horizontal: 2),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color:
-                          habit.completionStatus[i] ? Colors.green : Colors.red,
+                      border: Border.all(color: Colors.grey),
                     ),
-                  ),
-                ),
+                    child: Center(
+                      child: Text(
+                        _getDayAbbreviation(date.day),
+                        style: TextStyle(fontSize: 10),
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
-            onTap: () async {
-              final result = await Navigator.pushNamed(
-                context,
-                '/edit_habit',
-                arguments: habit,
-              );
-              if (result != null) {
-                setState(() {
-                  if (result == 'delete') {
-                    habits.removeWhere((h) => h.id == habit.id);
-                  } else {
-                    final updatedHabit = result as Habit;
-                    final index =
-                        habits.indexWhere((h) => h.id == updatedHabit.id);
-                    if (index != -1) {
-                      habits[index] = updatedHabit;
+          ),
+          Expanded(
+            child: ListView.builder(
+              itemCount: habits.length,
+              itemBuilder: (context, index) {
+                final habit = habits[index];
+                return ListTile(
+                  title: Text(habit.name),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: List.generate(
+                      5,
+                      (i) => GestureDetector(
+                        onTap: () => _toggleHabitCompletion(habit.id, i),
+                        child: Container(
+                          width: 20,
+                          height: 20,
+                          margin: EdgeInsets.symmetric(horizontal: 2),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: habit.completionStatus[i]
+                                ? Colors.green
+                                : Colors.red,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  onTap: () async {
+                    final result = await Navigator.pushNamed(
+                      context,
+                      '/edit_habit',
+                      arguments: habit,
+                    );
+                    if (result != null) {
+                      setState(() {
+                        if (result == 'delete') {
+                          habits.removeWhere((h) => h.id == habit.id);
+                        } else {
+                          final updatedHabit = result as Habit;
+                          final index =
+                              habits.indexWhere((h) => h.id == updatedHabit.id);
+                          if (index != -1) {
+                            habits[index] = updatedHabit;
+                          }
+                        }
+                      });
                     }
-                  }
-                });
-              }
-            },
-          );
-        },
+                  },
+                );
+              },
+            ),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
@@ -106,5 +142,26 @@ class _HabitListScreenState extends State<HabitListScreen> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
+  }
+
+  String _getDayAbbreviation(int weekday) {
+    switch (weekday) {
+      case DateTime.monday:
+        return 'M';
+      case DateTime.tuesday:
+        return 'T';
+      case DateTime.wednesday:
+        return 'W';
+      case DateTime.thursday:
+        return 'T';
+      case DateTime.friday:
+        return 'F';
+      case DateTime.saturday:
+        return 'S';
+      case DateTime.sunday:
+        return 'S';
+      default:
+        return '';
+    }
   }
 }
