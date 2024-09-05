@@ -43,29 +43,32 @@ class _HabitListScreenState extends State<HabitListScreen> {
         children: [
           Padding(
             padding: const EdgeInsets.all(3.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: List.generate(
-                5,
-                (index) {
-                  final date =
-                      DateTime.now().subtract(Duration(days: 4 - index));
-                  return Container(
-                    width: 20,
-                    height: 20,
-                    margin: EdgeInsets.symmetric(horizontal: 2),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(color: Colors.grey),
-                    ),
-                    child: Center(
-                      child: Text(
-                        _getDayAbbreviation(date.day),
-                        style: TextStyle(fontSize: 10),
+            child: Padding(
+              padding: EdgeInsets.only(right: 22.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: List.generate(
+                  5,
+                  (index) {
+                    final date =
+                        DateTime.now().subtract(Duration(days: 4 - index));
+                    return Container(
+                      width: 20,
+                      height: 20,
+                      margin: EdgeInsets.symmetric(horizontal: 2),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(color: Colors.grey),
                       ),
-                    ),
-                  );
-                },
+                      child: Center(
+                        child: Text(
+                          _getDayAbbreviation(date.day),
+                          style: TextStyle(fontSize: 10),
+                        ),
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
           ),
