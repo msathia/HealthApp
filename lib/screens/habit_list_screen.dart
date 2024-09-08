@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/habit.dart';
-import 'package:intl/intl.dart'; // Added for DateTime formatting
+// Added for DateTime formatting
 
 class HabitListScreen extends StatefulWidget {
   @override
