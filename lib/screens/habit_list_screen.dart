@@ -1,36 +1,65 @@
 import 'package:flutter/material.dart';
 import '../models/habit.dart';
+import '../helpers/database_helper.dart';
 // Added for DateTime formatting
 
 class HabitListScreen extends StatefulWidget {
   @override
-  _HabitListScreenState createState() => _HabitListScreenState();
+  HabitListScreenState createState() => HabitListScreenState();
 }
 
-class _HabitListScreenState extends State<HabitListScreen> {
-  List<Habit> habits = [
-    Habit(
-      id: '1',
-      name: 'Example Habit',
-      completionStatus: [false, false, false, false, false],
-    ),
-  ];
+class HabitListScreenState extends State<HabitListScreen> {
+  List<Habit> habits = [];
 
-  void _toggleHabitCompletion(String habitId, int dayIndex) {
+  @override
+  void initState() {
+    super.initState();
+    _loadHabits();
+  }
+
+  Future<void> _loadHabits() async {
+    final loadedHabits = await DatabaseHelper.instance.getHabits();
+    
+    if (loadedHabits.isEmpty) {
+      // Add an example habit if the list is empty (first launch)
+      final exampleHabit = Habit(
+        id: '',  // Change this line from null to an empty string
+        name: 'Example: Daily Exercise',
+        date: DateTime.now(),
+        completed: false,
+        completionStatus: List.filled(5, false),
+      );
+      await DatabaseHelper.instance.insertHabit(exampleHabit);
+      loadedHabits.add(exampleHabit);
+    }
+
     setState(() {
-      habits = habits.map((habit) {
-        if (habit.id == habitId) {
-          List<bool> newStatus = List.from(habit.completionStatus);
-          newStatus[dayIndex] = !newStatus[dayIndex];
-          return Habit(
-            id: habit.id,
-            name: habit.name,
-            completionStatus: newStatus,
-          );
-        }
-        return habit;
-      }).toList();
+      habits = loadedHabits;
     });
+  }
+
+  void _toggleHabitCompletion(Habit habit, int index) async {
+    final updatedCompletionStatus = List<bool>.from(habit.completionStatus);
+    updatedCompletionStatus[index] = !updatedCompletionStatus[index];
+
+    final updatedHabit = Habit(
+      id: habit.id,
+      name: habit.name,
+      date: habit.date,
+      completed: updatedCompletionStatus.any((status) => status),
+      completionStatus: updatedCompletionStatus,
+    );
+
+    setState(() {
+      // Update the habit in the local list
+      final habitIndex = habits.indexWhere((h) => h.id == habit.id);
+      if (habitIndex != -1) {
+        habits[habitIndex] = updatedHabit;
+      }
+    });
+
+    // Update the habit in the database
+    await DatabaseHelper.instance.updateHabit(updatedHabit);
   }
 
   @override
@@ -50,8 +79,7 @@ class _HabitListScreenState extends State<HabitListScreen> {
                 children: List.generate(
                   5,
                   (index) {
-                    final date =
-                        DateTime.now().subtract(Duration(days: 4 - index));
+                    final date = DateTime.now().subtract(Duration(days: 4 - index));
                     return Container(
                       width: 20,
                       height: 20,
@@ -62,7 +90,7 @@ class _HabitListScreenState extends State<HabitListScreen> {
                       ),
                       child: Center(
                         child: Text(
-                          _getDayAbbreviation(date.day),
+                          _getDayAbbreviation(date.weekday), // Change this line
                           style: TextStyle(fontSize: 10),
                         ),
                       ),
@@ -84,7 +112,7 @@ class _HabitListScreenState extends State<HabitListScreen> {
                     children: List.generate(
                       5,
                       (i) => GestureDetector(
-                        onTap: () => _toggleHabitCompletion(habit.id, i),
+                        onTap: () => _toggleHabitCompletion(habit, i),
                         child: Container(
                           width: 20,
                           height: 20,

@@ -38,13 +38,17 @@ class EditHabitScreenState extends State<EditHabitScreen> {
         habit = Habit(
           id: DateTime.now().toString(),
           name: name,
-          completionStatus: List.filled(5, false),
+          date: DateTime.now(),
+          completionStatus: List.filled(5, false), 
+          completed: false,
         );
       } else {
         habit = Habit(
           id: habit!.id,
           name: name,
+          date: habit!.date,
           completionStatus: habit!.completionStatus,
+          completed: habit!.completed,
         );
       }
       Navigator.pop(context, habit);

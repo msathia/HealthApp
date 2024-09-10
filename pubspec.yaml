@@ -11,10 +11,12 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  sqflite: ^2.3.0 # Add this line
 
   english_words: ^4.0.0
   provider: ^6.0.0
-  intl: ^0.18.0  # Add this line
+  intl: ^0.18.0 # Add this line
+  path: ^1.8.0
 
 dev_dependencies:
   flutter_test:
